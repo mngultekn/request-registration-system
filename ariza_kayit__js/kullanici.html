@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Talep Kayıt Sistemi - Kullanıcı</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Bildirim Alanı -->
+  <div id="userNotification" class="user-notification" style="display:none;">
+    <span id="notificationMessage"></span>
+    <button class="notification-close" onclick="hideNotification()">&times;</button>
+  </div>
+  
+  <div class="logo-container">
+    <img src="birisik_logo_beyaz_zemin.jpg" alt="İBB ve İGDAŞ Logoları" class="kurum-logo">
+  </div>
+  <div class="container">
+    <h1>Talep Kayıt Sistemi</h1>
+    <div id="kullaniciPanel">
+      <form id="faultForm" autocomplete="off">
+        <!-- Talep Türü Seçimi -->
+        <div class="request-type-section">
+          <div class="form-group required">
+            <label for="requestType">Talep Türü</label>
+            <select id="requestType" required>
+              <option value="">Talep türü seçin</option>
+              <option value="ariza">Arıza Talebi</option>
+              <option value="malzeme">Malzeme Talebi</option>
+              <option value="diger">Diğer</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Genel Bilgiler -->
+        <div class="form-section">
+          <div class="form-section-title">Genel Bilgiler</div>
+          <div class="form-group required">
+            <label for="ip">IP Numarası</label>
+            <input type="text" id="ip" required maxlength="30" placeholder="Örn: 192.168.1.10">
+          </div>
+          <div class="form-group required">
+            <label for="fullname">İsim Soyisim</label>
+            <input type="text" id="fullname" required maxlength="50" placeholder="Adınız Soyadınız">
+          </div>
+          <div class="form-group">
+            <label for="priority">Öncelik</label>
+            <select id="priority">
+              <option value="dusuk">Düşük</option>
+              <option value="normal" selected>Normal</option>
+              <option value="yuksek">Yüksek</option>
+              <option value="acil">Acil</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Arıza Talebi Alanları -->
+        <div id="arizaFields" class="ariza-fields" style="display:none;">
+          <div class="form-section-title">Arıza Detayları</div>
+          <div class="form-group required">
+            <label for="deviceName">Cihaz Adı</label>
+            <input type="text" id="deviceName" maxlength="50" placeholder="Örn: Yazıcı, Laptop">
+          </div>
+          <div class="form-group required">
+            <label for="faultDesc">Arıza Detayı</label>
+            <textarea id="faultDesc" maxlength="200" placeholder="Arızayı detaylı bir şekilde açıklayın..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="solution">Çözüm Önerisi (isteğe bağlı)</label>
+            <textarea id="solution" maxlength="200" placeholder="Varsa çözüm önerinizi yazın..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Malzeme Talebi Alanları -->
+        <div id="malzemeFields" class="malzeme-fields" style="display:none;">
+          <div class="form-section-title">Malzeme Detayları</div>
+          <div class="form-group required">
+            <label for="materialType">Malzeme Türü</label>
+            <select id="materialType">
+              <option value="">Malzeme türü seçin</option>
+              <option value="kablo">Kablo</option>
+              <option value="adaptor">Adaptör</option>
+              <option value="klavye">Klavye</option>
+              <option value="mouse">Mouse</option>
+              <option value="monitor">Monitör</option>
+              <option value="yazici">Yazıcı</option>
+              <option value="diger">Diğer</option>
+            </select>
+          </div>
+          <div class="form-group required">
+            <label for="materialDesc">Malzeme Detayı</label>
+            <textarea id="materialDesc" maxlength="200" placeholder="İhtiyacınız olan malzemeyi detaylandırın..."></textarea>
+          </div>
+          <div class="form-group required">
+            <label for="quantity">Miktar</label>
+            <input type="number" id="quantity" min="1" max="100" placeholder="Adet">
+          </div>
+        </div>
+        
+        <!-- Diğer Talep Alanları -->
+        <div id="digerFields" class="diger-fields" style="display:none;">
+          <div class="form-section-title">Diğer Talep Detayları</div>
+          <div class="form-group required">
+            <label for="otherTitle">Talep Başlığı</label>
+            <input type="text" id="otherTitle" maxlength="100" placeholder="Talebinizin başlığını yazın...">
+          </div>
+          <div class="form-group required">
+            <label for="otherDesc">Talep Detayı</label>
+            <textarea id="otherDesc" maxlength="300" placeholder="Talebinizi detaylı bir şekilde açıklayın..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="otherPriority">Öncelik</label>
+            <select id="otherPriority">
+              <option value="dusuk">Düşük</option>
+              <option value="normal" selected>Normal</option>
+              <option value="yuksek">Yüksek</option>
+              <option value="acil">Acil</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn">Talep Ekle</button>
+      </form>
+      <!-- İstatistikler -->
+      <div class="stats-section">
+        <div class="stat-card">
+          <div class="stat-number" id="totalRequests">0</div>
+          <div class="stat-label">Toplam Talep</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="pendingRequests">0</div>
+          <div class="stat-label">Bekleyen</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="completedRequests">0</div>
+          <div class="stat-label">Tamamlanan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="thisMonthRequests">0</div>
+          <div class="stat-label">Bu Ay</div>
+        </div>
+      </div>
+      
+      <h2>Benim Taleplerim</h2>
+      
+      <!-- Arama ve Filtreleme -->
+      <div class="search-filter-section">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="🔍 Taleplerimde ara..." maxlength="50">
+        </div>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">Tümü</button>
+          <button class="filter-btn" data-filter="ariza">Arıza</button>
+          <button class="filter-btn" data-filter="malzeme">Malzeme</button>
+          <button class="filter-btn" data-filter="diger">Diğer</button>
+        </div>
+        <div class="status-filter-buttons">
+          <button class="status-filter-btn active" data-status="all">Tüm Durumlar</button>
+          <button class="status-filter-btn" data-status="Onay Bekliyor">Onay Bekleyenler</button>
+          <button class="status-filter-btn" data-status="Onaylandı">Onaylananlar</button>
+          <button class="status-filter-btn" data-status="İletildi">İletilenler</button>
+          <button class="status-filter-btn" data-status="Tamamlandı">Tamamlananlar</button>
+        </div>
+      </div>
+      
+      <ul id="faultList" class="fault-list"></ul>
+      <p id="noRecords" style="color:#888; text-align:center; margin-top:18px; display:none;">Henüz talep kaydınız yok.</p>
+    </div>
+  </div>
+  <!-- Modal for Fault Details -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" title="Kapat">&times;</button>
+      <h3 style="margin-top:0; color:#1976d2;">Talep Detayları</h3>
+      <div class="modal-details" id="modalDetails"></div>
+    </div>
+  </div>
+  
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/dataManager.js"></script>
+  <script src="js/userManager.js"></script>
+  <script src="js/notificationManager.js"></script>
+  <script src="js/errorHandler.js"></script>
+  <script src="js/performanceManager.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html> 

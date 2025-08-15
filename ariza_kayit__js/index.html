@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Talep Kayıt Sistemi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .welcome-container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 40px 32px;
+      text-align: center;
+    }
+    .welcome-title {
+      color: #2d3a4b;
+      font-size: 2em;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .welcome-subtitle {
+      color: #6b7280;
+      font-size: 1.1em;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .welcome-btn {
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 16px 32px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+      text-decoration: none;
+      display: inline-block;
+      width: 280px;
+      text-align: center;
+    }
+    .welcome-btn:hover {
+      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+    }
+    .welcome-btn.admin {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+    }
+    .welcome-btn.admin:hover {
+      background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    .feature-list {
+      text-align: left;
+      margin: 24px 0;
+      padding: 0;
+      list-style: none;
+    }
+    .feature-list li {
+      padding: 8px 0;
+      color: #374151;
+      position: relative;
+      padding-left: 24px;
+    }
+    .feature-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #10b981;
+      font-weight: bold;
+    }
+    @media (max-width: 600px) {
+      .welcome-container {
+        margin: 40px auto;
+        padding: 24px 20px;
+      }
+      .welcome-title {
+        font-size: 1.6em;
+      }
+      .welcome-btn {
+        width: 100%;
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="birisik_logo_beyaz_zemin.jpg" alt="İBB ve İGDAŞ Logoları" class="kurum-logo">
+  </div>
+  <div class="welcome-container">
+    <h1 class="welcome-title">Talep Kayıt Sistemi</h1>
+    <p class="welcome-subtitle">
+      Arıza ve malzeme taleplerinizi kolayca kayıt altına alın, takip edin ve yönetin.
+    </p>
+    
+    <ul class="feature-list">
+      <li>Arıza talepleri oluşturma ve takip</li>
+      <li>Malzeme talepleri kayıt ve yönetim</li>
+      <li>Gerçek zamanlı bildirimler</li>
+      <li>Excel raporları oluşturma</li>
+      <li>Durum takibi ve güncelleme</li>
+      <li>Mobil uyumlu tasarım</li>
+    </ul>
+    
+    <div class="button-container">
+      <a href="kullanici.html" class="welcome-btn" target="_blank">
+        📝 Kullanıcı Girişi
+      </a>
+      <a href="yonetici.html" class="welcome-btn admin" target="_blank">
+        ⚙️ Yönetici Girişi
+      </a>
+    </div>
+  </div>
+</body>
+</html> 

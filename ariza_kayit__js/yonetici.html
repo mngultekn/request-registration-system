@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Talep Kayıt Sistemi - Yönetici</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .login-panel { 
+      max-width: 380px; 
+      margin: 60px auto 0 auto; 
+      background: #fff; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1); 
+      padding: 32px 28px 28px 28px; 
+      border: 1px solid #e5e7eb;
+    }
+    .login-panel h2 { 
+      text-align: center; 
+      color: #1976d2; 
+      margin-bottom: 24px; 
+      font-size: 1.5em;
+      font-weight: 600;
+    }
+    .login-panel label { 
+      font-weight: 600; 
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    .login-panel input { 
+      width: 100%; 
+      margin-bottom: 16px; 
+      padding: 12px 16px; 
+      border: 2px solid #e5e7eb; 
+      border-radius: 8px; 
+      font-size: 1rem; 
+      transition: all 0.2s ease;
+    }
+    .login-panel input:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+    .login-panel .btn { 
+      width: 100%; 
+      margin-top: 8px;
+    }
+    .login-error { 
+      color: #dc2626; 
+      text-align: center; 
+      margin-bottom: 16px; 
+      display: none; 
+      background: #fef2f2;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #fecaca;
+      font-weight: 500;
+    }
+    .fault-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 18px; 
+    }
+    .fault-table th, .fault-table td { 
+      border-bottom: 1px solid #e5e7eb; 
+      padding: 12px 8px; 
+      text-align: left; 
+      font-size: 0.98em; 
+    }
+    .fault-table th { 
+      background: #f8fafc; 
+      font-weight: 600;
+      color: #374151;
+    }
+    .fault-table tr:last-child td { 
+      border-bottom: none; 
+    }
+    .actions { 
+      display: flex; 
+      gap: 8px; 
+    }
+    .edit-btn, .delete-btn { 
+      background: none; 
+      border: none; 
+      color: #0071bc; 
+      cursor: pointer; 
+      font-size: 1em; 
+      padding: 4px 8px; 
+      border-radius: 6px; 
+      transition: all 0.2s ease; 
+    }
+    .edit-btn:hover { 
+      background: #e3f2fd; 
+      color: #1976d2;
+    }
+    .delete-btn:hover { 
+      background: #fef2f2; 
+      color: #dc2626; 
+    }
+    .filter-bar { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 12px; 
+      margin-bottom: 18px; 
+      align-items: center; 
+    }
+    .filter-bar input, .filter-bar select { 
+      min-width: 120px; 
+      margin-bottom: 0; 
+    }
+    .panel-actions { 
+      display: flex; 
+      justify-content: center; 
+      gap: 18px; 
+      margin-top: 32px; 
+    }
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .status-row select {
+      min-width: 110px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 2px solid #e5e7eb;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+    }
+    .status-row select:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+    /* Gelişmiş Filtreleme Sistemi */
+    .advanced-filter-section {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .filter-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    
+    .filter-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .filter-group {
+      flex: 1 1 320px;
+      min-width: 0;
+    }
+    
+    .filter-label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .filter-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    
+    .filter-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      background: #fff;
+      color: #6b7280;
+      flex: 1 1 140px;
+    }
+    
+    .filter-btn.active {
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      color: white;
+      border-color: #1976d2;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+      transform: translateY(-1px);
+    }
+    
+    .filter-btn:hover:not(.active) {
+      background: #f1f5f9;
+      color: #374151;
+      border-color: #d1d5db;
+      transform: translateY(-1px);
+    }
+    
+    .admin-search-input {
+      width: 100%;
+      padding: 10px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95em;
+      background: #fff;
+      transition: all 0.2s ease;
+    }
+    
+    .admin-search-input:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+      outline: none;
+    }
+    
+    .admin-sort-select {
+      width: 100%;
+      padding: 10px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95em;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .admin-sort-select:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+      outline: none;
+    }
+    /* Mobil dropdown stilleri */
+    .admin-filter-select {
+      display: none;
+      width: 100%;
+      padding: 10px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95em;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 8px;
+    }
+    .admin-filter-select:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25,118,210,0.1);
+      outline: none;
+    }
+    /* Öncelik Etiketleri */
+    .priority-label {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+    }
+    
+    .priority-dusuk {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+    
+    .priority-normal {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    
+    .priority-yuksek {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    
+    .priority-acil {
+      background: #fee2e2;
+      color: #dc2626;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .admin-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .admin-header h1 {
+      color: #2d3a4b;
+      margin-bottom: 8px;
+    }
+    .admin-header p {
+      color: #6b7280;
+      font-size: 1.1em;
+      margin: 0;
+    }
+    /* Bildirim Stilleri */
+    .admin-alert {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      color: #fff;
+      padding: 16px 20px;
+      text-align: center;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+      display: none;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      animation: shake 0.6s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    .shake {
+      animation: shake 0.6s ease-in-out;
+    }
+    @media (max-width: 600px) {
+      .status-row { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 6px; 
+      }
+      .status-row select { 
+        width: 100%; 
+      }
+      .filter-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+      /* Mobilde butonları gizle, dropdown göster */
+      .filter-buttons { 
+        display: none;
+      }
+      .admin-filter-select {
+        display: block;
+      }
+      .advanced-filter-section {
+        padding: 16px;
+      }
+      .login-panel {
+        margin: 20px 16px;
+        padding: 24px 20px;
+      }
+    }
+    /* Tablet için düzen (601px - 900px) */
+    @media (min-width: 601px) and (max-width: 900px) {
+      .filter-row {
+        gap: 16px;
+      }
+      .filter-group {
+        flex: 1 1 100%;
+      }
+      .filter-buttons {
+        gap: 8px;
+      }
+      .filter-buttons .filter-btn {
+        flex: 1 1 calc(50% - 8px);
+      }
+    }
+    @media (max-width: 700px) { 
+      .fault-table th, .fault-table td { 
+        font-size: 0.95em; 
+      } 
+      .panel-actions { 
+        flex-direction: column; 
+        gap: 12px; 
+      } 
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="birisik_logo_beyaz_zemin.jpg" alt="İBB ve İGDAŞ Logoları" class="kurum-logo">
+  </div>
+  
+  <!-- Bildirim Alanı -->
+  <div id="adminAlert" class="admin-alert">
+    🎉 Yeni talep kaydı eklendi!
+  </div>
+  
+  <!-- Basit Yönetici Girişi -->
+  <div id="loginPanel" class="login-panel">
+    <h2>Yönetici Girişi</h2>
+    <div class="login-error" id="loginError">Kullanıcı adı veya şifre hatalı!</div>
+    <form id="adminLoginForm" autocomplete="off">
+      <div class="form-group">
+        <label for="adminUser">Kullanıcı Adı</label>
+        <input type="text" id="adminUser" required placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label for="adminPass">Şifre</label>
+        <input type="password" id="adminPass" required placeholder="12345">
+      </div>
+      <button type="submit" class="btn">Giriş Yap</button>
+    </form>
+  </div>
+  <!-- Yönetici Paneli -->
+  <div class="container" id="yoneticiPanel" style="display:none;">
+    <div class="admin-header">
+      <h1>Talep Kayıt Sistemi - Yönetici</h1>
+      <p>Tüm talep kayıtlarını görüntüleyin ve yönetin</p>
+    </div>
+    
+    <!-- Gelişmiş Filtreleme Sistemi -->
+    <div class="advanced-filter-section">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label class="filter-label">Talep Türü:</label>
+          <!-- Mobil için dropdown -->
+          <select id="typeFilterSelect" class="admin-filter-select">
+            <option value="all">Tümü</option>
+            <option value="ariza">Arıza</option>
+            <option value="malzeme">Malzeme</option>
+            <option value="diger">Diğer</option>
+          </select>
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">Tümü</button>
+            <button class="filter-btn" data-filter="ariza">Arıza</button>
+            <button class="filter-btn" data-filter="malzeme">Malzeme</button>
+            <button class="filter-btn" data-filter="diger">Diğer</button>
+          </div>
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label">Durum:</label>
+          <!-- Mobil için dropdown -->
+          <select id="statusFilterSelect" class="admin-filter-select">
+            <option value="all">Tümü</option>
+            <option value="onay-bekliyor">Bekleyen</option>
+            <option value="onaylandi">Onaylı</option>
+            <option value="iletilen">İletilen</option>
+            <option value="tamamlandi">Tamamlanan</option>
+          </select>
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-status-filter="all">Tümü</button>
+            <button class="filter-btn" data-status-filter="onay-bekliyor">Bekleyen</button>
+            <button class="filter-btn" data-status-filter="onaylandi">Onaylı</button>
+            <button class="filter-btn" data-status-filter="iletilen">İletilen</button>
+            <button class="filter-btn" data-status-filter="tamamlandi">Tamamlanan</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-row">
+        <div class="filter-group">
+          <label class="filter-label">Arama:</label>
+          <input type="text" id="adminSearchInput" placeholder="🔍 Talep ara..." class="admin-search-input">
+        </div>
+        
+        <div class="filter-group">
+          <label class="filter-label">Sıralama:</label>
+          <select id="sortSelect" class="admin-sort-select">
+            <option value="newest">En Yeni</option>
+            <option value="oldest">En Eski</option>
+            <option value="priority">Öncelik</option>
+            <option value="status">Durum</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+      <a class="btn" id="showDeletedBtn" href="silinenler.html" target="_blank" style="padding:8px 16px; font-size:0.9em;">Silinenler</a>
+    </div>
+    <ul id="adminFaultList" class="fault-list"></ul>
+    <p id="adminNoRecords" style="color:#888; text-align:center; margin-top:18px; display:none;">Henüz talep kaydı yok.</p>
+    <div class="panel-actions">
+      <button class="btn" id="exportBtn" type="button">Excel'e Aktar</button>
+      <button class="btn" onclick="adminLogout()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Çıkış Yap</button>
+    </div>
+    <!-- Excel Aktarım Modalı -->
+    <div id="excelModal" class="modal">
+      <div class="modal-content" style="min-width:280px; max-width:90vw; text-align:center;">
+        <button class="modal-close" id="excelModalClose" title="Kapat">&times;</button>
+        <h3 style="margin-top:0; color:#1976d2;">Excel Aktarımı</h3>
+        <label style="display:flex; align-items:center; gap:8px; justify-content:center; margin:18px 0 24px 0; font-size:1.05em;">
+          <input type="checkbox" id="includeDeletedExcel" style="accent-color:#1976d2;"> Silinenleri dahil et
+        </label>
+        <div style="display:flex; gap:16px; justify-content:center;">
+          <button class="btn" id="excelModalExportBtn" type="button">Aktar</button>
+          <button class="btn" id="excelModalCancelBtn" type="button" style="background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">Vazgeç</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal for Fault Details -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" title="Kapat">&times;</button>
+      <h3 style="margin-top:0; color:#1976d2;">Talep Detayları</h3>
+      <div class="modal-details" id="modalDetails"></div>
+    </div>
+  </div>
+  <!-- Silinenler Modalı -->
+  <div id="deletedModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="deletedModalClose" title="Kapat">&times;</button>
+      <h3 style="margin-top:0; color:#dc2626;">Silinen Kayıtlar</h3>
+      <ul id="deletedList" class="fault-list"></ul>
+      <p id="noDeletedRecords" style="color:#888; text-align:center; margin-top:18px; display:none;">Silinen kayıt yok.</p>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/dataManager.js"></script>
+  <script src="js/userManager.js"></script>
+  <script src="js/notificationManager.js"></script>
+  <script src="js/errorHandler.js"></script>
+  <script src="js/performanceManager.js"></script>
+  <script src="js/yonetici.js"></script>
+</body>
+</html> 
