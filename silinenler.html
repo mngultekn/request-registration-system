@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Silinen Talep Kayıtları</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #f4f6fa; }
+    .container { 
+      max-width: 700px; 
+      margin: 40px auto; 
+      background: #fff; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1); 
+      padding: 32px 24px 24px 24px; 
+    }
+    h1 { 
+      text-align: center; 
+      color: #dc2626; 
+      margin-bottom: 24px; 
+      font-size: 1.8em;
+      font-weight: 600;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .page-header h1 {
+      color: #dc2626;
+      margin-bottom: 8px;
+    }
+    .page-header p {
+      color: #6b7280;
+      font-size: 1.1em;
+      margin: 0;
+    }
+    .fault-list { 
+      list-style: none; 
+      padding: 0; 
+      margin: 0; 
+    }
+    .fault-item { 
+      background: #fff; 
+      border-radius: 10px; 
+      margin-bottom: 12px; 
+      padding: 16px 20px; 
+      border: 1px solid #e5e7eb; 
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+      cursor: pointer; 
+      transition: all 0.2s ease; 
+    }
+    .fault-item:hover { 
+      background: #f9fafb; 
+      border-color: #d1d5db; 
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .fault-device { 
+      font-weight: 600; 
+      color: #1976d2; 
+      margin-bottom: 4px; 
+      font-size: 1.05em;
+    }
+    .fault-desc { 
+      color: #6b7280; 
+      font-size: 0.95em; 
+      margin-bottom: 8px; 
+      line-height: 1.4;
+    }
+    .meta-row { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 12px; 
+      align-items: center; 
+      margin-top: 8px; 
+    }
+    .status-label { 
+      display: inline-block; 
+      padding: 4px 12px; 
+      border-radius: 20px; 
+      font-size: 0.85em; 
+      font-weight: 600; 
+      color: #fff; 
+      margin-right: 6px; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-bekliyor { 
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+    }
+    .status-isleniyor { 
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+    }
+    .status-cozuldu { 
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+    }
+    .deleted-by { 
+      font-size: 0.9em; 
+      color: #1976d2; 
+      background: #e3f2fd; 
+      border-radius: 6px; 
+      padding: 4px 10px; 
+      font-weight: 500;
+    }
+    .deleted-from { 
+      font-size: 0.9em; 
+      color: #059669; 
+      background: #d1fae5; 
+      border-radius: 6px; 
+      padding: 4px 10px; 
+      font-weight: 500;
+    }
+    .meta-label { 
+      color: #6b7280; 
+      font-size: 0.9em; 
+      background: #f3f4f6;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .export-row { 
+      display: flex; 
+      justify-content: center; 
+      margin-bottom: 24px; 
+      gap: 12px;
+    }
+    .btn { 
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+      color: #fff; 
+      border: none; 
+      border-radius: 8px; 
+      padding: 12px 24px; 
+      font-size: 1rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s ease; 
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2); 
+    }
+    .btn:hover, .btn:focus { 
+      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+    }
+    .btn:active { 
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(25, 118, 210, 0.2);
+    }
+    .back-btn {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    }
+    .back-btn:hover {
+      background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    }
+    /* Modal */
+    .modal { 
+      display: none; 
+      position: fixed; 
+      z-index: 100; 
+      left: 0; 
+      top: 0; 
+      right: 0; 
+      bottom: 0; 
+      background: rgba(0,0,0,0.4); 
+      align-items: center; 
+      justify-content: center; 
+      backdrop-filter: blur(4px);
+    }
+    .modal.active { 
+      display: flex; 
+    }
+    .modal-content { 
+      background: #fff; 
+      border-radius: 12px; 
+      padding: 32px 28px 24px 28px; 
+      min-width: 360px; 
+      max-width: 90vw; 
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15); 
+      position: relative; 
+      animation: fadeIn 0.3s ease; 
+    }
+    @keyframes fadeIn { 
+      from { transform: translateY(20px) scale(0.95); opacity: 0; } 
+      to { transform: translateY(0) scale(1); opacity: 1; } 
+    }
+    .modal-close { 
+      position: absolute; 
+      top: 16px; 
+      right: 20px; 
+      background: none; 
+      border: none; 
+      font-size: 1.5em; 
+      color: #9ca3af; 
+      cursor: pointer; 
+      transition: color 0.2s ease; 
+      width: 32px; 
+      height: 32px; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+    }
+    .modal-close:hover { 
+      color: #1976d2; 
+      background: #f3f4f6; 
+    }
+    .modal-details { 
+      margin-top: 16px; 
+      line-height: 1.6; 
+    }
+    .modal-details p {
+      margin-bottom: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .modal-details p:last-child {
+      border-bottom: none;
+    }
+    .modal-details strong { 
+      color: #1976d2; 
+      font-weight: 600;
+      display: inline-block;
+      min-width: 120px;
+    }
+    @media (max-width: 600px) { 
+      .container { 
+        margin: 20px auto;
+        padding: 20px 16px; 
+      } 
+      .meta-row { 
+        flex-direction: column; 
+        gap: 6px; 
+        align-items: flex-start; 
+      } 
+      .export-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1>Silinen Talep Kayıtları</h1>
+      <p>Silinen tüm talep kayıtlarını görüntüleyin</p>
+    </div>
+    
+    <!-- Excel Butonu Yukarı Taşındı -->
+    <div class="export-row">
+      <button class="btn" id="exportBtn" type="button">Excel'e Aktar</button>
+      <button class="btn back-btn" onclick="window.close()">Geri Dön</button>
+    </div>
+    
+    <ul id="deletedList" class="fault-list"></ul>
+    <p id="noDeletedRecords" style="color:#888; text-align:center; margin-top:18px; display:none;">Silinen kayıt yok.</p>
+  </div>
+  <!-- Modal for Fault Details -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" title="Kapat">&times;</button>
+      <h3 style="margin-top:0; color:#dc2626;">Silinen Kayıt Detayı</h3>
+      <div class="modal-details" id="modalDetails"></div>
+    </div>
+  </div>
+  <script>
+    function getDeletedRecords() {
+      return JSON.parse(localStorage.getItem('deletedFaultRecords') || '[]');
+    }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, function(m) {
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[m];
+      });
+    }
+    function formatDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return d.toLocaleString('tr-TR');
+    }
+    function renderDeletedList() {
+      const deletedList = document.getElementById('deletedList');
+      const noDeletedRecords = document.getElementById('noDeletedRecords');
+      const records = getDeletedRecords();
+      deletedList.innerHTML = '';
+      if (records.length === 0) {
+        noDeletedRecords.style.display = 'block';
+        return;
+      }
+      noDeletedRecords.style.display = 'none';
+      records.forEach(record => {
+        let statusClass = 'status-bekliyor';
+        if (record.status === 'İşleniyor') statusClass = 'status-isleniyor';
+        if (record.status === 'Çözüldü') statusClass = 'status-cozuldu';
+        
+        // Talep türüne göre renk sınıfı
+        let typeClass = '';
+        if (record.requestType === 'ariza') {
+          typeClass = 'kart-ariza';
+        } else if (record.requestType === 'malzeme') {
+          typeClass = 'kart-malzeme';
+        }
+        
+        const li = document.createElement('li');
+        li.className = `fault-item ${typeClass}`;
+        li.tabIndex = 0;
+        
+        let deviceInfo = '';
+        if (record.requestType === 'ariza') {
+          deviceInfo = `${escapeHtml(record.deviceName||'')} - ${escapeHtml(record.fullname||'')}`;
+        } else if (record.requestType === 'malzeme') {
+          deviceInfo = `${escapeHtml(record.materialType||'')} (${record.quantity||''} adet) - ${escapeHtml(record.fullname||'')}`;
+        } else {
+          deviceInfo = `${escapeHtml(record.deviceName||'')} - ${escapeHtml(record.fullname||'')}`;
+        }
+        
+        let descInfo = '';
+        if (record.requestType === 'ariza') {
+          descInfo = escapeHtml(record.faultDesc||'');
+        } else if (record.requestType === 'malzeme') {
+          descInfo = escapeHtml(record.materialDesc||'');
+        } else {
+          descInfo = escapeHtml(record.faultDesc||'');
+        }
+        
+        li.innerHTML = `
+          <div class="fault-device">${deviceInfo}</div>
+          <div class="fault-desc">${descInfo}</div>
+          <div class="meta-row">
+            <span class="status-label ${statusClass}">${record.status||'Bekliyor'}</span>
+            <span class="meta-label">${formatDate(record.timestamp)}</span>
+            <span class="meta-label">IP: ${escapeHtml(record.ip||'')}</span>
+            ${record.requestType === 'malzeme' ? 
+              `<span class="meta-label">Malzeme: ${escapeHtml(record.materialType||'')}</span>` : 
+              `<span class="meta-label">Çözüm: ${escapeHtml(record.solution||'')}</span>`
+            }
+            <span class="meta-label">${record.requestType === 'ariza' ? 'Arıza' : record.requestType === 'malzeme' ? 'Malzeme' : 'Talep'}</span>
+            <span class="deleted-by">${record.deletedBy ? escapeHtml(record.deletedBy) : 'Bilinmiyor'}</span>
+            <span class="deleted-from">${record.deletedFrom ? escapeHtml(record.deletedFrom) : ''}</span>
+          </div>
+        `;
+        li.addEventListener('click', function() {
+          showModal(record);
+        });
+        li.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            showModal(record);
+          }
+        });
+        deletedList.appendChild(li);
+      });
+    }
+    function showModal(record) {
+      const modal = document.getElementById('modal');
+      const modalDetails = document.getElementById('modalDetails');
+      
+      let modalContent = `
+        <p><strong>IP Numarası:</strong><br>${escapeHtml(record.ip||'')}</p>
+        <p><strong>İsim Soyisim:</strong><br>${escapeHtml(record.fullname||'')}</p>
+      `;
+      
+      if (record.requestType === 'ariza') {
+        modalContent += `
+          <p><strong>Talep Türü:</strong><br>Arıza Talebi</p>
+          <p><strong>Cihaz Adı:</strong><br>${escapeHtml(record.deviceName||'')}</p>
+          <p><strong>Arıza Detayı:</strong><br>${escapeHtml(record.faultDesc||'')}</p>
+          <p><strong>Çözüm:</strong><br>${escapeHtml(record.solution||'')}</p>
+        `;
+      } else if (record.requestType === 'malzeme') {
+        modalContent += `
+          <p><strong>Talep Türü:</strong><br>Malzeme Talebi</p>
+          <p><strong>Malzeme Türü:</strong><br>${escapeHtml(record.materialType||'')}</p>
+          <p><strong>Malzeme Detayı:</strong><br>${escapeHtml(record.materialDesc||'')}</p>
+          <p><strong>Miktar:</strong><br>${record.quantity} adet</p>
+        `;
+      } else {
+        modalContent += `
+          <p><strong>Cihaz Adı:</strong><br>${escapeHtml(record.deviceName||'')}</p>
+          <p><strong>Arıza Detayı:</strong><br>${escapeHtml(record.faultDesc||'')}</p>
+          <p><strong>Çözüm:</strong><br>${escapeHtml(record.solution||'')}</p>
+        `;
+      }
+      
+      modalContent += `
+        <p><strong>Durum:</strong> <span class="status-label status-${(record.status||'Bekliyor').toLowerCase().replace(' ', '')}">${record.status||'Bekliyor'}</span></p>
+        <p><strong>Tarih/Saat:</strong> ${formatDate(record.timestamp)}</p>
+        <p><strong>Silinen Kişi:</strong> <span class="deleted-by">${record.deletedBy ? escapeHtml(record.deletedBy) : 'Bilinmiyor'}</span></p>
+        <p><strong>Silinen Panel:</strong> <span class="deleted-from">${record.deletedFrom ? escapeHtml(record.deletedFrom) : ''}</span></p>
+      `;
+      
+      modalDetails.innerHTML = modalContent;
+      modal.classList.add('active');
+      document.getElementById('modalClose').focus();
+    }
+    document.getElementById('modalClose').addEventListener('click', function() {
+      document.getElementById('modal').classList.remove('active');
+    });
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('active');
+    });
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('modal').classList.contains('active') && e.key === 'Escape') {
+        document.getElementById('modal').classList.remove('active');
+      }
+    });
+    // Excel'e Aktar
+    document.getElementById('exportBtn').addEventListener('click', function() {
+      const records = getDeletedRecords();
+      if (records.length === 0) return alert('Dışa aktarılacak veri yok!');
+      
+      const wsData = [
+        ['IP Numarası','İsim Soyisim','Talep Türü','Cihaz/Malzeme','Detay','Çözüm/Miktar','Durum','Tarih/Saat','Silinen Kişi','Silinen Panel'],
+        ...records.map(r => [
+          String(r.ip||''),
+          String(r.fullname||''),
+          r.requestType === 'ariza' ? 'Arıza Talebi' : r.requestType === 'malzeme' ? 'Malzeme Talebi' : 'Talep',
+          r.requestType === 'malzeme' ? String(r.materialType||'') : String(r.deviceName||''),
+          r.requestType === 'malzeme' ? String(r.materialDesc||'') : String(r.faultDesc||''),
+          r.requestType === 'malzeme' ? String(r.quantity||'') + ' adet' : String(r.solution||''),
+          String(r.status||''),
+          formatDate(r.timestamp),
+          r.deletedBy||'',
+          r.deletedFrom||''
+        ])
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'SilinenKayitlar');
+      XLSX.writeFile(wb, 'silinen_talep_kayitlari.xlsx');
+    });
+    renderDeletedList();
+    window.addEventListener('storage', renderDeletedList);
+  </script>
+</body>
+</html> 
